@@ -174,9 +174,14 @@ export function createClock({ canvas, readout, sub, root, config = {} }) {
   }
 
   function resize() {
-    DPR = Math.min(2, window.devicePixelRatio || 1);
     W = canvas.clientWidth || window.innerWidth;
     H = canvas.clientHeight || window.innerHeight;
+    // Cap the backing store: a wallpaper is redrawn once a second, not every frame,
+    // so 900k pixels is plenty and costs a fraction of a full-res canvas.
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    const pixels = W * H * DPR * DPR;
+    if (pixels > 900000) DPR *= Math.sqrt(900000 / pixels);
+    DPR = Math.max(1, DPR);
     canvas.width = Math.max(2, Math.round(W * DPR));
     canvas.height = Math.max(2, Math.round(H * DPR));
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -561,8 +566,8 @@ export function createClock({ canvas, readout, sub, root, config = {} }) {
     end();
   }
 
-  function frame(ts) {
-    if (document.hidden) return;
+  function frame(ts, force) {
+    if (document.hidden && !force) return;
     const now = Date.now() / 1000;
     const dt = Math.min(0.033, last ? now - last : 0.016);
     last = now;
@@ -577,9 +582,9 @@ export function createClock({ canvas, readout, sub, root, config = {} }) {
     frame(ts);
   }
 
-  function step() {
+  function step(force) {
     last = 0;
-    frame(performance.now());
+    frame(performance.now(), force);
   }
 
   /* ---------- lifecycle ---------- */
@@ -588,7 +593,7 @@ export function createClock({ canvas, readout, sub, root, config = {} }) {
     stop();
     if (reduce) {
       step();
-      timer = setInterval(step, 1000);
+      timer = setInterval(() => step(), 1000);
       running = true;
       return;
     }
@@ -596,7 +601,7 @@ export function createClock({ canvas, readout, sub, root, config = {} }) {
     if (fps && fps <= 5) {
       // Wallpaper use: a plain interval beats rAF, which browsers throttle or stop.
       step();
-      timer = setInterval(step, 1000 / fps);
+      timer = setInterval(() => step(), 1000 / fps);
     } else {
       lastDraw = 0;
       step();
@@ -655,7 +660,9 @@ export function createClock({ canvas, readout, sub, root, config = {} }) {
     set,
     start,
     stop,
-    redraw: step,
+    // Draw one frame even when the host page is hidden. The Android wallpaper
+    // drives this from native code, where page visibility never becomes true.
+    redraw: () => step(true),
     get running() {
       return running;
     },

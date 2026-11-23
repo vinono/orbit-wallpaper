@@ -109,6 +109,13 @@ export function configFromLocation(loc = window.location) {
   return normalize(out);
 }
 
+/** The Android app marks the URL it loads so the page can hand over frame timing. */
+export function isAppContext(loc = window.location) {
+  const hash = (loc.hash || "").replace(/^#/, "");
+  if (!hash) return false;
+  return new URLSearchParams(hash).get("app") === "1";
+}
+
 export function wallpaperUrl(base, config) {
   const url = new URL(base, window.location.href);
   url.hash = "c=" + encodeConfig(config);

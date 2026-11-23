@@ -84,7 +84,8 @@
             android:layout_weight="1"
             android:layout_marginRight="6dp"
             android:text="@string/btn_apply"
-            android:textColor="#04120A" />
+            android:textColor="#04120A"
+            android:backgroundTint="#3DFF7A" />
 
         <Button
             android:id="@+id/set_wallpaper"
@@ -94,6 +95,7 @@
             android:layout_marginLeft="6dp"
             android:text="@string/btn_set"
             android:textColor="#EAFFF0"
-            android:backgroundTint="#0C1210" />
+            android:backgroundTint="#14201A"
+            android:strokeColor="#2A3B33" />
     </LinearLayout>
 </LinearLayout>

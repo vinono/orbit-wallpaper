@@ -57,6 +57,20 @@ class WebScreen {
     private ByteBuffer rowBuffer;
     private boolean softwareOnly = false;
     private String pendingUrl;
+    private boolean pumping = false;
+
+    private final Runnable pump = new Runnable() {
+        @Override
+        public void run() {
+            if (!pumping) return;
+            if (webView != null) {
+                // A page in an offscreen window never reports itself visible, so
+                // ask it for one frame explicitly instead of waiting on rAF.
+                webView.evaluateJavascript("window.orbitWallpaper&&window.orbitWallpaper.tick()", null);
+            }
+            handler.postDelayed(this, 500);
+        }
+    };
 
     WebScreen(Context context) {
         this.context = context;
@@ -67,7 +81,7 @@ class WebScreen {
     void setUrl(String url) {
         pendingUrl = url;
         handler.post(() -> {
-            if (webView != null) webView.loadUrl(url == null ? LOCAL_PAGE : url);
+            if (webView != null) webView.loadUrl(withAppFlag(url));
         });
     }
 
@@ -103,8 +117,18 @@ class WebScreen {
         return s;
     }
 
+    /** Tag the URL so the page knows the app drives its frames. */
+    private static String withAppFlag(String url) {
+        if (url == null || url.trim().isEmpty()) url = LOCAL_PAGE;
+        int hash = url.indexOf('#');
+        if (hash < 0) return url + "#app=1";
+        String tail = url.substring(hash + 1);
+        if (tail.contains("app=1")) return url;
+        return url + (tail.isEmpty() ? "app=1" : "&app=1");
+    }
+
     private void createWebView(String url) {
-        String target = url == null || url.trim().isEmpty() ? LOCAL_PAGE : url;
+        String target = withAppFlag(url);
 
         if (!softwareOnly) {
             try {
@@ -124,6 +148,7 @@ class WebScreen {
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 presentation.show();
                 webView.loadUrl(target);
+                startPump();
                 Log.i(TAG, "virtual display " + width + "x" + height + " @" + densityDpi);
                 return;
             } catch (Throwable t) {
@@ -140,7 +165,19 @@ class WebScreen {
         webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         layoutWebView();
         webView.loadUrl(target);
+        startPump();
         Log.i(TAG, "software webview " + width + "x" + height);
+    }
+
+    private void startPump() {
+        if (pumping) return;
+        pumping = true;
+        handler.post(pump);
+    }
+
+    private void stopPump() {
+        pumping = false;
+        handler.removeCallbacks(pump);
     }
 
     private void layoutWebView() {
@@ -255,6 +292,7 @@ class WebScreen {
     }
 
     void destroy() {
+        stopPump();
         handler.post(() -> {
             if (webView != null) {
                 webView.stopLoading();

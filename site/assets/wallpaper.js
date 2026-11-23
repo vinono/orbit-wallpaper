@@ -1,7 +1,7 @@
 // Boots the wallpaper page: built-in defaults < hash/query config.
 
 import { createClock, DEFAULTS } from "./clock.js";
-import { configFromLocation } from "./config.js";
+import { configFromLocation, isAppContext } from "./config.js";
 
 const builtin = (() => {
   try {
@@ -22,7 +22,21 @@ const clock = createClock({
   config,
 });
 
-document.fonts.ready.then(() => clock.start());
+// The Android wallpaper app drives frames from native code: a page inside an
+// offscreen window never reports itself visible, so rAF and timers can stall.
+const inApp = isAppContext();
+
+if (inApp) {
+  clock.redraw();
+} else {
+  document.fonts.ready.then(() => clock.start());
+}
+
+window.orbitWallpaper = {
+  tick: () => clock.redraw(),
+  start: () => clock.start(),
+  stop: () => clock.stop(),
+};
 
 // A wallpaper should never scroll, zoom or select.
 document.addEventListener("gesturestart", (e) => e.preventDefault());
