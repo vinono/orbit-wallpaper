@@ -1,0 +1,12 @@
+node_modules/
+.DS_Store
+*.log
+
+# Generated: the bundled copy of the wallpaper page that ships inside the APK
+android/app/src/main/assets/wallpaper.html
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+android/captures/

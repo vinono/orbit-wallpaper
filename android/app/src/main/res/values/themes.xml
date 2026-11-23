@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.OrbitWallpaper" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:statusBarColor">#050807</item>
+        <item name="android:navigationBarColor">#050807</item>
+        <item name="android:windowBackground">#050807</item>
+        <item name="colorAccent">#3DFF7A</item>
+    </style>
+</resources>

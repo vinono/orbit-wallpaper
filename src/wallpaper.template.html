@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <title>Orbit Wallpaper</title>
+    <meta name="theme-color" content="#050807" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="description" content="An animated clock wallpaper: every second of the minute stays on the ring." />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./assets/clock.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #050807;
+        overflow: hidden;
+        overscroll-behavior: none;
+        touch-action: none;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      #stage {
+        position: fixed;
+        inset: 0;
+        height: 100%;
+        height: 100dvh;
+      }
+
+      /* Full-bleed on a phone in landscape too. */
+      @media (orientation: landscape) {
+        #stage {
+          inset: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="orbit-stage" id="stage">
+      <canvas id="canvas"></canvas>
+      <div class="orbit-readout" id="readout" role="timer" aria-label="Current time"></div>
+      <div class="orbit-sub" id="sub"></div>
+      <div class="orbit-crt" aria-hidden="true"></div>
+    </div>
+    <script id="orbit-config" type="application/json">{}</script>
+    <script type="module" src="./assets/wallpaper.js"></script>
+  </body>
+</html>

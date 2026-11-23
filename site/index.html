@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Orbit Wallpaper — an animated clock for your Android home screen</title>
+    <meta
+      name="description"
+      content="Design an animated clock in the browser, then set it as your Android live wallpaper. One HTML file, no account, no video, no app store."
+    />
+    <meta name="theme-color" content="#050807" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Orbit Wallpaper — an animated clock for your home screen" />
+    <meta
+      property="og:description"
+      content="Every second of the minute stays on the ring. Design it in the browser, set it as your Android live wallpaper."
+    />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./assets/clock.css" />
+    <link rel="stylesheet" href="./assets/site.css" />
+    <style>
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+        align-items: center;
+        gap: 56px;
+        padding: 76px 0 96px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 22px;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--dim);
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 12px var(--accent);
+      }
+
+      h1 {
+        margin: 0 0 20px;
+        font-size: clamp(32px, 4.6vw, 54px);
+        font-weight: 600;
+        line-height: 1.04;
+        letter-spacing: -0.035em;
+        max-width: 15ch;
+        text-wrap: balance;
+      }
+
+      .lede {
+        margin: 0 0 30px;
+        max-width: 46ch;
+        font-size: 15.5px;
+        line-height: 1.65;
+        color: var(--dim);
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 34px;
+      }
+
+      .facts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 28px;
+        padding-top: 22px;
+        border-top: 1px solid var(--line);
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--faint);
+      }
+
+      .hero-visual {
+        display: flex;
+        justify-content: center;
+      }
+
+      .hero-visual .phone {
+        max-width: min(320px, 40dvh);
+        filter: drop-shadow(0 0 90px rgba(61, 255, 122, 0.07));
+      }
+
+      section.band {
+        padding: 56px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .band-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px 24px;
+        margin-bottom: 30px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 28px;
+      }
+
+      .step {
+        padding-top: 16px;
+        border-top: 1px solid var(--line-strong);
+      }
+
+      .step .num {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        color: var(--accent);
+      }
+
+      .step h3 {
+        margin: 12px 0 6px;
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .step p {
+        margin: 0;
+        font-size: 13.5px;
+        line-height: 1.6;
+        color: var(--dim);
+      }
+
+      .duo {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1px;
+        background: var(--line);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .duo > div {
+        padding: 26px;
+        background: var(--panel);
+      }
+
+      .duo h3 {
+        margin: 10px 0 8px;
+        font-size: 15px;
+      }
+
+      .duo p {
+        margin: 0 0 16px;
+        font-size: 13.5px;
+        line-height: 1.6;
+        color: var(--dim);
+      }
+
+      .duo code {
+        font-family: var(--mono);
+        font-size: 11.5px;
+        color: var(--ink);
+        background: var(--raise);
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        padding: 1px 5px;
+      }
+
+      @media (max-width: 860px) {
+        .hero {
+          grid-template-columns: 1fr;
+          gap: 40px;
+          padding: 48px 0 64px;
+        }
+
+        .hero-visual {
+          order: -1;
+        }
+
+        .hero-visual .phone {
+          max-width: min(250px, 42dvh);
+        }
+
+        .steps {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+
+        .duo {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="site-header">
+        <a class="wordmark" href="./">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
+            <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-opacity=".25" />
+            <path d="M12 3.5v3M20.5 12h-3M12 20.5v-3M3.5 12h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+            <circle cx="12" cy="12" r="1.8" fill="#3dff7a" />
+          </svg>
+          Orbit Wallpaper
+        </a>
+        <nav class="site-nav">
+          <a href="./studio.html">Studio</a>
+          <a href="https://github.com/vinono/orbit-wallpaper">GitHub</a>
+          <a class="btn" href="https://github.com/vinono/orbit-wallpaper/releases/latest/download/orbit-wallpaper.apk">Get the app</a>
+        </nav>
+      </header>
+
+      <main>
+        <div class="hero">
+          <div>
+            <span class="eyebrow">Android live wallpaper · also a web page</span>
+            <h1>Every second of the minute stays on the ring.</h1>
+            <p class="lede">
+              A clock that counts instead of sweeping. Each second leaves a number behind, tied to the readout by a
+              string that sways. Design it here, then set it as your phone's live wallpaper.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="./studio.html">Open the Studio</a>
+              <a class="btn" href="https://github.com/vinono/orbit-wallpaper/releases/latest/download/orbit-wallpaper.apk">Download APK</a>
+            </div>
+            <div class="facts">
+              <span>One HTML file</span>
+              <span>No network at runtime</span>
+              <span>1 redraw per second</span>
+            </div>
+          </div>
+
+          <div class="hero-visual">
+            <div class="phone">
+              <div class="phone-screen orbit-stage" id="hero-screen">
+                <canvas id="hero-canvas"></canvas>
+                <div class="orbit-readout" id="hero-readout" role="timer" aria-label="Current time"></div>
+                <div class="orbit-sub" id="hero-sub"></div>
+                <div class="orbit-crt" aria-hidden="true"></div>
+                <div class="phone-ui">
+                  <div class="status-bar">
+                    <span>9:41</span>
+                    <svg viewBox="0 0 44 11" fill="currentColor" aria-hidden="true">
+                      <rect x="0" y="7" width="3" height="4" rx="1" />
+                      <rect x="5" y="5" width="3" height="6" rx="1" />
+                      <rect x="10" y="3" width="3" height="8" rx="1" />
+                      <rect x="15" y="1" width="3" height="10" rx="1" />
+                      <path d="M24 4.2a7 7 0 0 1 8 0l-1.2 1.5a5 5 0 0 0-5.6 0Z" />
+                      <circle cx="28" cy="8.6" r="1.4" />
+                      <rect x="35" y="2.5" width="7" height="6" rx="1.6" fill="none" stroke="currentColor" stroke-width="1" />
+                      <rect x="36.4" y="3.9" width="4.4" height="3.2" rx="0.8" />
+                      <path d="M43 4.6v1.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="app-grid" aria-hidden="true">
+                      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                    </div>
+                    <div class="dock" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section class="band">
+          <div class="band-head">
+            <h2>From browser to home screen</h2>
+            <span class="micro">Three steps, no account</span>
+          </div>
+          <div class="steps">
+            <div class="step">
+              <span class="num">01</span>
+              <h3>Design it</h3>
+              <p>
+                Pick a form, palette and placement in the Studio. The phone preview includes a fake home screen so you
+                can see what the icons will cover.
+              </p>
+            </div>
+            <div class="step">
+              <span class="num">02</span>
+              <h3>Take it with you</h3>
+              <p>
+                Copy the wallpaper link, or send it straight to the app. Every setting travels inside the URL, so there
+                is nothing to sign in to.
+              </p>
+            </div>
+            <div class="step">
+              <span class="num">03</span>
+              <h3>Set the wallpaper</h3>
+              <p>
+                Install the APK, open it, paste the link and tap Set wallpaper. Android asks you to confirm, and the
+                clock is behind your icons.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="band">
+          <div class="band-head">
+            <h2>Two ways to run it</h2>
+            <span class="micro">Same page, same clock</span>
+          </div>
+          <div class="duo">
+            <div>
+              <span class="micro">Android</span>
+              <h3>As a live wallpaper</h3>
+              <p>
+                A small WebView wallpaper app, about 200 lines of Java. It loads your link, draws the page into the
+                wallpaper surface, and forwards touches so the strings still move under your finger.
+              </p>
+              <a class="btn" href="https://github.com/vinono/orbit-wallpaper/releases/latest/download/orbit-wallpaper.apk">Download orbit-wallpaper.apk</a>
+            </div>
+            <div>
+              <span class="micro">Anywhere else</span>
+              <h3>As a web page or file</h3>
+              <p>
+                Download a single <code>.html</code> file from the Studio. Double-click it, host it, or point the app at
+                your own copy. It never makes a network request.
+              </p>
+              <a class="btn" href="./studio.html">Open the Studio</a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>Built on the orbit-clock idea: time is countable.</span>
+        <span>
+          <a href="https://github.com/vinono/orbit-wallpaper">Source</a> ·
+          <a href="https://clock.ding.one/">Inspired by Orbit Clocks</a>
+        </span>
+      </footer>
+    </div>
+
+    <script type="module">
+      import { createClock } from "./assets/clock.js";
+
+      const clock = createClock({
+        canvas: document.getElementById("hero-canvas"),
+        readout: document.getElementById("hero-readout"),
+        sub: document.getElementById("hero-sub"),
+        root: document.getElementById("hero-screen"),
+        config: {
+          form: "dial",
+          palette: "phosphor",
+          radius: 0.285,
+          offsetY: -0.16,
+          readoutScale: 0.38,
+          handStart: 0.72,
+          handWidth: 4.5,
+          fps: 30,
+          alpha: 0.9,
+        },
+      });
+      document.fonts.ready.then(() => clock.start());
+    </script>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "orbit-wallpaper",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "An animated clock you can set as an Android live wallpaper, or keep as a web page.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "serve": "node scripts/serve.mjs",
+    "apk": "node scripts/build.mjs && mkdir -p android/app/src/main/assets && cp site/wallpaper.html android/app/src/main/assets/wallpaper.html && cd android && gradle assembleDebug"
+  },
+  "license": "MIT"
+}
