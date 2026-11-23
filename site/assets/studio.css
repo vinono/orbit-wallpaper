@@ -361,21 +361,24 @@
   }
 
   .stage-col .phone {
-    max-width: min(240px, 34dvh);
+    max-width: min(190px, 26dvh);
   }
 
   .panel {
+    display: block;
     border-left: 0;
     border-top: 1px solid var(--line);
   }
 
   .panel-scroll {
+    flex: none;
     overflow: visible;
   }
 
   .panel-actions {
     position: sticky;
     bottom: 0;
+    box-shadow: 0 -18px 24px -18px rgba(0, 0, 0, 0.9);
   }
 }
 
